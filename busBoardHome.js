@@ -7,8 +7,12 @@ var request = new XMLHttpRequest()
 function busFilter (busData) {
     let busDataFilter = [];
     for (let i = 0; i < busData.length; i++) {
+        //converts time to station in seconds to minutes
+        let minsToStation = Math.round(busData[i].timeToStation/60)
         //console.log(busData[i].lineId)
-        busDataFilter.push([busData[i].lineId, busData[i].expectedArrival, busData[i].timeToStation])
+        busDataFilter.push({'Bus Number': busData[i].lineId , 
+                            'Arrival Time': busData[i].expectedArrival, 
+                            'Time to station in minutes': minsToStation})
         };
         return busDataFilter;
     }
@@ -21,13 +25,14 @@ function busFilter (busData) {
   function getBuses (method, URL) { 
     request.open('GET', URL , true)
     request.onload = function () {
-        //the requrest is returned as a string JSON.parse converts it into an array of objects
+        //the request is returned as a string JSON.parse converts it into an array of objects
         const busData = JSON.parse(request.responseText);
         //console.log(typeof(busData))
         //console.log(busData)
         
         const nextBuses = busFilter(busData)
     console.log(nextBuses)
+    return nextBuses
     // const nextBuses is an array of arrays, each array containing the values of 3 properties
     // which we filtered using the busFilter function defined above.
 
@@ -40,5 +45,5 @@ request.send()
 
   }
 
-console.log(getBuses('GET', URL));
+getBuses('GET', URL)
 
